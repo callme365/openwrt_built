@@ -36,9 +36,12 @@ jobs:
 
     # 步骤 5：生成配置
     - name: Apply custom config
+      run: cp config.txt openwrt/.config  # 从仓库根目录复制配置
+       
+    - name: Configure OpenWrt
       run: |
        cd openwrt
-       cp ../config.txt .config  # 从仓库根目录复制配置
+       make defconfig  # 自动修正依赖（可能修改你的配置）
     
     # 步骤 6：编译固件
     - name: Build OpenWrt
