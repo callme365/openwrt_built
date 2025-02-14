@@ -34,12 +34,12 @@ jobs:
         ./scripts/feeds update -a  # 更新所有软件包列表
         ./scripts/feeds install -a  # 安装所有软件包
 
-    # 步骤 5：生成默认配置
-    - name: Configure OpenWrt
+    # 步骤 5：生成配置
+    - name: Apply custom config
       run: |
-        cd openwrt
-        make defconfig  # 生成默认配置
-
+       cd openwrt
+       cp ../config.txt .config  # 从仓库根目录复制配置
+    
     # 步骤 6：编译固件
     - name: Build OpenWrt
       run: |
