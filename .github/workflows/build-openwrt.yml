@@ -47,3 +47,10 @@ jobs:
         make -j$(nproc)  # 使用所有 CPU 核心编译（速度快，但可能因资源不足失败）
         # 如果失败，改用单线程编译：
         # make -j1 V=s  # 输出详细日志，便于调试
+ 
+    # 自动发布到 Releases
+    - name: Upload to Release
+      uses: softprops/action-gh-release@v1
+      if: github.ref == 'refs/heads/main'  # 仅 main 分支触发
+      with:
+        files: openwrt/bin/targets/**/*.img.gz  # 上传所有固件
