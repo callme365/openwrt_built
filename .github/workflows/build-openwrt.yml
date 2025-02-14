@@ -25,7 +25,7 @@ jobs:
       run: |
         git clone https://git.openwrt.org/openwrt/openwrt.git
         cd openwrt
-        git checkout v23.05.3  # 指定官方稳定版本号
+        git checkout v24.10.0  # 指定官方稳定版本号
 
     # 步骤 4：更新软件包源（feeds）
     - name: Update feeds
