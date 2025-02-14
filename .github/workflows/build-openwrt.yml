@@ -1,46 +1,49 @@
 name: Build OpenWrt
 
 on:
-  workflow_dispatch:  # 手动触发
-  push:  # 推送代码时触发（可选）
+  workflow_dispatch:  # 允许手动触发
+  push:  # 推送代码到 main 分支时触发
     branches: [ main ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # 使用最新版 Ubuntu 环境
+    runs-on: ubuntu-latest  # 使用 GitHub 最新的 Ubuntu 虚拟机环境
 
     steps:
+    # 步骤 1：拉取仓库代码
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4  # 官方提供的代码拉取工具
 
+    # 步骤 2：安装编译依赖
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y build-essential clang flex g++ gawk gcc-multilib gettext git libncurses-dev libssl-dev python3 python3-distutils rsync unzip zlib1g-dev
 
+    # 步骤 3：克隆 OpenWrt 源码
     - name: Clone OpenWrt source
       run: |
         git clone https://git.openwrt.org/openwrt/openwrt.git
         cd openwrt
-        git checkout v23.05.3  # 使用官方稳定版本号
+        git checkout v23.05.3  # 指定官方稳定版本号
 
+    # 步骤 4：更新软件包源（feeds）
     - name: Update feeds
       run: |
         cd openwrt
-        ./scripts/feeds update -a
-        ./scripts/feeds install -a
+        ./scripts/feeds update -a  # 更新所有软件包列表
+        ./scripts/feeds install -a  # 安装所有软件包
 
+    # 步骤 5：生成默认配置
     - name: Configure OpenWrt
       run: |
         cd openwrt
-        make defconfig
-        # 自定义配置（可选，需提前生成 .config 文件）
-        # curl -O https://example.com/your-config.txt
-        # cp your-config.txt .config
+        make defconfig  # 生成默认配置
 
+    # 步骤 6：编译固件
     - name: Build OpenWrt
       run: |
         cd openwrt
-        make -j$(nproc)  # 使用所有可用核心编译
-        # 或指定单线程编译（避免 GitHub 环境资源限制）
-        # make -j1 V=s
+        make -j$(nproc)  # 使用所有 CPU 核心编译（速度快，但可能因资源不足失败）
+        # 如果失败，改用单线程编译：
+        # make -j1 V=s  # 输出详细日志，便于调试
