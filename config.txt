@@ -1,0 +1,5 @@
+git clone https://git.openwrt.org/openwrt/openwrt.git
+cd openwrt
+./scripts/feeds update -a
+./scripts/feeds install -a
+make menuconfig  # 进入图形界面配置，保存后生成 .config 文件
